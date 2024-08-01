@@ -1,0 +1,5 @@
+server:
+  # api接口端口
+  httpPort: 8080
+  # 信令通道端口
+  cmdPort: 8081
