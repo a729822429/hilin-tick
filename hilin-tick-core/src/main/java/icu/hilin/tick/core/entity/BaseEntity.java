@@ -7,12 +7,16 @@ import lombok.Data;
 public abstract class BaseEntity<T> {
 
     public static final byte TYPE_REQUEST_AUTH = 1;
-    public static final byte TYPE_RESPONSE_AUTH = (byte) 151;
+    public static final byte TYPE_REQUEST_CHANNEL_DATA = 2;
+
+    public static final byte TYPE_RESPONSE_AUTH = -1;
+    public static final byte TYPE_RESPONSE_CHANNEL_DATA = -2;
 
     /**
      * 类型
-     * 1-150 请求
-     * 151-255 响应
+     * 1-127 请求
+     * 0 心跳
+     * (-127)-(-1) 响应
      */
     private byte type;
 

@@ -41,8 +41,4 @@ public class BaseTickCache {
         return caffeine.build();
     }
 
-    public static void main(String[] args) {
-        Cache<String, String> cache = createCache();
-    }
-
 }

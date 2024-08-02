@@ -1,7 +1,7 @@
 package icu.hilin.tick.server.cmd;
 
 import cn.hutool.core.util.IdUtil;
-import icu.hilin.core.Contant;
+import icu.hilin.tick.core.TickContant;
 import icu.hilin.tick.core.entity.BaseEntity;
 import icu.hilin.tick.core.handler.BaseCmdHandler;
 import io.vertx.core.buffer.Buffer;
@@ -32,17 +32,16 @@ public class CmdServer implements ApplicationRunner {
         context.getBeansOfType(BaseCmdHandler.class).forEach((name, handler) -> HANDLERS.add(handler));
     }
 
-
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        Contant.VERTX.createHttpServer()
+        TickContant.VERTX.createHttpServer()
                 .webSocketHandler(wsSocket -> {
                     final StringBuilder clientID = new StringBuilder();
 
                     // 添加初始化客户端ID，认证成功后覆盖
                     clientID.append(IdUtil.getSnowflakeNextIdStr());
 
-                    log.info("{}:{}", wsSocket.remoteAddress().host(), wsSocket.remoteAddress().port());
+                    log.info("CMD Client连接进入 {}:{}", wsSocket.remoteAddress().host(), wsSocket.remoteAddress().port());
 
                     wsSocket.binaryMessageHandler(body -> handler(clientID.toString(), body));
 
@@ -50,7 +49,7 @@ public class CmdServer implements ApplicationRunner {
 
                     // 收到auth消息
                     consumers.add(
-                            Contant.EVENT_BUS.consumer("auth-" + clientID, authEvent -> {
+                            TickContant.EVENT_BUS.consumer("auth-" + clientID, authEvent -> {
 
                                 consumers.forEach(MessageConsumer::unregister);
                                 consumers.clear();
@@ -60,23 +59,27 @@ public class CmdServer implements ApplicationRunner {
                                 clientID.append(authEvent.body().toString(StandardCharsets.UTF_8));
 
                                 log.info("send consumer {}", clientID);
-                                // 添加发送消息监听
-                                consumers.add(Contant.EVENT_BUS.consumer("send-" + clientID, event -> {
+                                // 通过cmd通道发送消息给内网channel
+                                consumers.add(TickContant.EVENT_BUS.consumer("send-cmd-" + clientID, event -> {
                                     wsSocket.write(event.body());
                                 }));
 
                                 // 添加主动断开监听
-                                consumers.add(Contant.EVENT_BUS.consumer("close-" + clientID, event -> {
+                                consumers.add(TickContant.EVENT_BUS.consumer("close-" + clientID, event -> {
                                     wsSocket.close();
                                 }));
-                                authEvent.reply("");
+                                authEvent.reply(Buffer.buffer());
                             }));
 
                     // 添加主动断开监听
-                    consumers.add(Contant.EVENT_BUS.consumer("close-" + clientID, event -> {
+                    consumers.add(TickContant.EVENT_BUS.consumer("close-" + clientID, event -> {
                         wsSocket.close();
                     }));
-                    wsSocket.closeHandler(v -> consumers.forEach(MessageConsumer::unregister));
+                    wsSocket.closeHandler(v -> {
+                        log.warn("CMD Client断开 {}:{}", wsSocket.remoteAddress().host(),
+                                wsSocket.remoteAddress().port());
+                        consumers.forEach(MessageConsumer::unregister);
+                    });
                 })
                 .listen(cmdPort, "0.0.0.0", r -> {
                     if (r.succeeded()) {

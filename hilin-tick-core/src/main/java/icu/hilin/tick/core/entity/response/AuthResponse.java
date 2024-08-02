@@ -82,12 +82,4 @@ public class AuthResponse extends BaseEntity<List<AuthResponse.ChannelInfo>> {
          */
         private Long updateTime;
     }
-
-    public static void main(String[] args) {
-        new ScheduledThreadPoolExecutor(1)
-                .scheduleAtFixedRate(()->{
-                    File file = new File("d:\\111.txt");
-                    System.out.println(file.lastModified());
-                },1,1, TimeUnit.SECONDS);
-    }
 }

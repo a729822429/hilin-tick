@@ -1,6 +1,6 @@
 package icu.hilin.tick.client;
 
-import icu.hilin.core.Contant;
+import icu.hilin.tick.core.TickContant;
 import icu.hilin.tick.core.entity.BaseEntity;
 import icu.hilin.tick.core.entity.request.AuthRequest;
 import icu.hilin.tick.core.handler.BaseCmdHandler;
@@ -39,7 +39,7 @@ public class TickClientApplication implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        Contant.VERTX.createWebSocketClient().connect(8081, "localhost", "/", r -> {
+        TickContant.VERTX.createWebSocketClient().connect(8081, "localhost", "/", r -> {
             if (r.succeeded()) {
                 log.info("客户端启动成功");
                 WebSocket socket = r.result();
@@ -66,12 +66,10 @@ public class TickClientApplication implements ApplicationRunner {
                 // todo 启动穿透端口监听
                 // todo 现在模拟，监听12345端口
 
-
             } else {
                 log.error("客户端启动失败", r.cause());
             }
         });
     }
-
 
 }
