@@ -27,7 +27,7 @@ public class TickClientApplication implements ApplicationRunner {
                 .run(args);
     }
 
-    private static final Set<BaseCmdHandler> HANDLERS = new HashSet<>();
+    private static final Set<BaseCmdHandler<?>> HANDLERS = new HashSet<>();
 
     @Autowired
     public void init(ApplicationContext context) {
@@ -60,7 +60,6 @@ public class TickClientApplication implements ApplicationRunner {
 
                 socket.closeHandler(v -> {
                     System.out.println("closed");
-
                 });
 
                 // todo 启动穿透端口监听
