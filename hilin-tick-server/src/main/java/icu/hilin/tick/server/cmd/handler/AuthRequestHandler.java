@@ -11,12 +11,7 @@ import icu.hilin.tick.core.entity.BaseEntity;
 import icu.hilin.tick.core.entity.request.AuthRequest;
 import icu.hilin.tick.core.entity.response.AuthResponse;
 import icu.hilin.tick.core.handler.BaseCmdHandler;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
-import io.vertx.core.eventbus.DeliveryOptions;
-import io.vertx.core.eventbus.Message;
-import io.vertx.core.tracing.TracingPolicy;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
@@ -44,6 +39,17 @@ public class AuthRequestHandler extends BaseCmdHandler<AuthRequest> {
                 // todo 查询隧道列表
                 List<AuthResponse.ChannelInfo> channels = new ArrayList<>();
                 log.info("auth publish {}", clientInfo.getClientId());
+
+                {
+                    AuthResponse.ChannelInfo channelInfo = new AuthResponse.ChannelInfo();
+                    channelInfo.setType(1);
+                    channelInfo.setChannelId("1");
+                    channelInfo.setClientID(clientID);
+                    channelInfo.setRemotePort(9999);
+                    channelInfo.setTargetHost("192.168.0.1");
+                    channelInfo.setTargetPort(80);
+                    channels.add(channelInfo);
+                }
 
                 TickContant.EVENT_BUS.publish("send-cmd-" + clientInfo.getClientId(),
                         new AuthResponse(BaseEntity.TYPE_RESPONSE_AUTH, channels).toBuf());
