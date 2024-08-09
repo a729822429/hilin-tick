@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cn.hutool.json.JSONUtil;
+import icu.hilin.tick.core.TickContant;
 import icu.hilin.tick.core.entity.BaseEntity;
 import icu.hilin.tick.core.entity.response.AuthResponse;
 import icu.hilin.tick.core.handler.BaseCmdHandler;
@@ -27,6 +28,7 @@ public class AuthResponseHandler extends BaseCmdHandler<AuthResponse> {
 
     @Override
     public void doDeal(String clientID, AuthResponse entity) {
+        // 清空所有通道缓存
         CHANNELS.clear();
         for (AuthResponse.ChannelInfo channelInfo : entity.toDataEntity()) {
             CHANNELS.put(channelInfo.getChannelId(), channelInfo);

@@ -52,7 +52,9 @@ public class DataRequestHandler extends BaseCmdHandler<DataRequest> {
 
                     // 数据发送到内网服务器
                     consumers.add(TickContant.EVENT_BUS.consumer("channel-inside-pp-" + channelData.getConnectorID(),
-                            event -> event.reply(Buffer.buffer())));
+                            event -> {
+                                event.reply(Buffer.buffer());
+                            }));
 
                     r.result().closeHandler(v -> {
                         consumers.forEach(MessageConsumer::unregister);

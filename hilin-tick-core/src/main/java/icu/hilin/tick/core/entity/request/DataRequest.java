@@ -67,7 +67,7 @@ public class DataRequest extends BaseEntity<DataRequest.ChannelData> {
         public static byte TYPE_CLOSE = 3;
 
         /**
-         * 请求id
+         * 请求连接id
          */
         private long connectorID;
 

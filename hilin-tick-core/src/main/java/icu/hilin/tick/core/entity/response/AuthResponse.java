@@ -1,15 +1,12 @@
 package icu.hilin.tick.core.entity.response;
 
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+
 import cn.hutool.json.JSONUtil;
 import icu.hilin.tick.core.entity.BaseEntity;
 import io.vertx.core.buffer.Buffer;
 import lombok.Data;
-
-import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 public class AuthResponse extends BaseEntity<List<AuthResponse.ChannelInfo>> {
 
