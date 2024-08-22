@@ -1,38 +1,41 @@
 package icu.hilin.tick.client.handler;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import cn.hutool.json.JSONUtil;
-import icu.hilin.tick.core.TickContant;
 import icu.hilin.tick.core.entity.BaseEntity;
 import icu.hilin.tick.core.entity.response.AuthResponse;
 import icu.hilin.tick.core.handler.BaseCmdHandler;
 import io.vertx.core.buffer.Buffer;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
-@Slf4j
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+@Component
 public class AuthResponseHandler extends BaseCmdHandler<AuthResponse> {
 
-    public static final Map<String, AuthResponse.ChannelInfo> CHANNELS = new HashMap<>();
+    private static final Map<Long, AuthResponse.TunnelInfo> TUNNELS = new ConcurrentHashMap<>();
 
-    @Override
-    public boolean needDeal(String clientID, Buffer body) {
-        return BaseEntity.TYPE_RESPONSE_AUTH == body.getByte(0);
+    public static AuthResponse.TunnelInfo getTUNNEL(long tunnelID) {
+        return TUNNELS.get(tunnelID);
     }
 
     @Override
-    public AuthResponse buffer2Entity(String clientID, Buffer body) {
+    public boolean needDeal(Long clientID, Buffer body) {
+        return BaseEntity.TYPE_RESPONSE_AUTH_SUCCESS == body.getByte(0);
+    }
+
+    @Override
+    public AuthResponse buffer2Entity(Long clientID, Buffer body) {
         return new AuthResponse(body);
     }
 
     @Override
-    public void doDeal(String clientID, AuthResponse entity) {
-        // 清空所有通道缓存
-        CHANNELS.clear();
-        for (AuthResponse.ChannelInfo channelInfo : entity.toDataEntity()) {
-            CHANNELS.put(channelInfo.getChannelId(), channelInfo);
-            log.info("收到通道信息 : {}", JSONUtil.toJsonStr(channelInfo));
+    public void doDeal(Long clientID, AuthResponse response) {
+        List<AuthResponse.TunnelInfo> tunnels = response.toDataEntity();
+        TUNNELS.clear();
+        for (AuthResponse.TunnelInfo tunnel : tunnels) {
+            TUNNELS.put(tunnel.getTunnelId(), tunnel);
         }
+
     }
 }

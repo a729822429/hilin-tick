@@ -11,7 +11,9 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "icu.hilin.tick.client")
 public class ClientConfig {
 
-    private String clientId;
+    private Long clientId;
     private String clientPassword;
+    private String serverHost = "localhost";
+    private int serverPort= 8081;
 
 }

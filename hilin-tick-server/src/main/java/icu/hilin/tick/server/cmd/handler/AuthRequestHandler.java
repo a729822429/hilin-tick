@@ -1,64 +1,62 @@
 package icu.hilin.tick.server.cmd.handler;
 
+import cn.hutool.core.util.ObjectUtil;
+import icu.hilin.tick.core.TickConstant;
+import icu.hilin.tick.core.entity.BaseEntity;
+import icu.hilin.tick.core.entity.request.AuthRequest;
+import icu.hilin.tick.core.entity.response.AuthErrorResponse;
+import icu.hilin.tick.core.entity.response.AuthResponse;
+import icu.hilin.tick.core.handler.BaseCmdHandler;
+import icu.hilin.tick.server.tunnel.TunnelServer;
+import io.vertx.core.buffer.Buffer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.stereotype.Component;
-
-import cn.hutool.core.util.ObjectUtil;
-import icu.hilin.tick.core.TickContant;
-import icu.hilin.tick.core.entity.BaseEntity;
-import icu.hilin.tick.core.entity.request.AuthRequest;
-import icu.hilin.tick.core.entity.response.AuthResponse;
-import icu.hilin.tick.core.handler.BaseCmdHandler;
-import io.vertx.core.buffer.Buffer;
-import lombok.extern.slf4j.Slf4j;
-
 @Component
-@Slf4j
 public class AuthRequestHandler extends BaseCmdHandler<AuthRequest> {
+
+    @Autowired
+    private TunnelServer tunnelServer;
+
     @Override
-    public boolean needDeal(String clientID, Buffer body) {
+    public boolean needDeal(Long clientID, Buffer body) {
         return body.getByte(0) == BaseEntity.TYPE_REQUEST_AUTH;
     }
 
     @Override
-    public AuthRequest buffer2Entity(String clientID, Buffer body) {
+    public AuthRequest buffer2Entity(Long clientID, Buffer body) {
         return new AuthRequest(body);
     }
 
     @Override
-    public void doDeal(String clientID, AuthRequest entity) {
+    public void doDeal(Long clientID, AuthRequest entity) {
+        // 1. 认证
+        // todo 暂时只判断不为空
         AuthRequest.ClientInfo clientInfo = entity.toDataEntity();
         if (ObjectUtil.isNotEmpty(clientInfo.getClientId()) && ObjectUtil.isNotEmpty(clientInfo.getClientPassword())) {
-            log.info("CMD Server认证成功 {}:{}", clientInfo.getClientId(), clientInfo.getClientPassword());
+            // 2. 认证成功，获取客户端隧道列表
+            // todo
+            List<AuthResponse.TunnelInfo> list = new ArrayList<>();
+            list.add(new AuthResponse.TunnelInfo());
+            list.get(0).setType(1);
+            list.get(0).setTunnelId(1L);
+            list.get(0).setClientID(clientID);
+            list.get(0).setRemotePort(9999);
+            list.get(0).setTargetHost("www.baidu.com");
+            list.get(0).setTargetPort(80);
 
-            // 通知cmd server修改clientID
-            TickContant.EVENT_BUS.request("auth-" + clientID, Buffer.buffer(clientInfo.getClientId()), r -> {
-                // 查询通知客户端登录成功
-                // todo 查询隧道列表
-                List<AuthResponse.ChannelInfo> channels = new ArrayList<>();
-                log.info("auth publish {}", clientInfo.getClientId());
+            tunnelServer.startTcpTunnelServer(list.get(0));
 
-                {
-                    AuthResponse.ChannelInfo channelInfo = new AuthResponse.ChannelInfo();
-                    channelInfo.setType(1);
-                    channelInfo.setChannelId("1");
-                    channelInfo.setClientID(clientID);
-                    channelInfo.setRemotePort(9999);
-                    channelInfo.setTargetHost("192.168.0.1");
-                    channelInfo.setTargetPort(80);
-                    channels.add(channelInfo);
-                }
-
-                TickContant.EVENT_BUS.publish("send-cmd-" + clientInfo.getClientId(),
-                        new AuthResponse(BaseEntity.TYPE_RESPONSE_AUTH, channels).toBuf());
-            });
+            // 3. 启动隧道，并把隧道发送给客户端
+            AuthResponse response = new AuthResponse(list);
+            TickConstant.EVENT_BUS.publish(String.format(TickConstant.CMD_SERVER, "send", clientID), response.toBuf());
         } else {
-            log.warn("CMD Server认证失败 {}:{}", clientInfo.getClientId(), clientInfo.getClientPassword());
-            // 通知服务关闭连接
-            TickContant.EVENT_BUS.publish("close-" + clientID, Buffer.buffer());
+            // 2. 认证失败
+            AuthErrorResponse response = new AuthErrorResponse();
+            TickConstant.EVENT_BUS.publish(String.format(TickConstant.CMD_SERVER, "send", clientID), response.toBuf());
         }
     }
-
 }

@@ -7,10 +7,24 @@ import lombok.Data;
 public abstract class BaseEntity<T> {
 
     public static final byte TYPE_REQUEST_AUTH = 1;
-    public static final byte TYPE_REQUEST_CHANNEL_DATA = 2;
+    public static final byte TYPE_REQUEST_CHANNEL_CONNECTOR_DATA = 2;
+    public static final byte TYPE_REQUEST_CHANNEL_TRANSPORT_DATA = 3;
+    public static final byte TYPE_REQUEST_CHANNEL_CLOSE_DATA = 4;
 
-    public static final byte TYPE_RESPONSE_AUTH = -1;
-    public static final byte TYPE_RESPONSE_CHANNEL_DATA = -2;
+    /**
+     * 心跳
+     */
+    public static final byte TYPE_HEARTBEAT = 0;
+
+    public static final byte TYPE_RESPONSE_AUTH_SUCCESS = -1;
+    public static final byte TYPE_RESPONSE_AUTH_ERROR = -2;
+    public static final byte TYPE_RESPONSE_CHANNEL_DATA = -3;
+
+    /**
+     * 隧道更新
+     */
+    public static final byte TYPE_RESPONSE_TUNNEL_UPDATE = -4;
+
 
     /**
      * 类型

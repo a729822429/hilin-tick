@@ -1,3 +1,5 @@
 icu.hilin.tick.client:
-  clientId: root
+  clientId: 123456
   clientPassword: Zxc.47566839
+  serverHost: localhost
+  serverPort: 8081

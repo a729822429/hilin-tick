@@ -1,31 +1,31 @@
 package icu.hilin.tick.core.entity.request;
 
 import icu.hilin.tick.core.entity.BaseEntity;
+import io.netty.buffer.ByteBufUtil;
 import io.vertx.core.buffer.Buffer;
 import lombok.Data;
 
-import java.nio.charset.StandardCharsets;
-
 public class AuthRequest extends BaseEntity<AuthRequest.ClientInfo> {
     public AuthRequest(byte type, Buffer dataBuf) {
-        super(type, dataBuf);
+        super(BaseEntity.TYPE_REQUEST_AUTH, dataBuf);
     }
 
-    public AuthRequest(byte type, ClientInfo data) {
-        super(type, data);
+    public AuthRequest(ClientInfo data) {
+        super(BaseEntity.TYPE_REQUEST_AUTH, data);
     }
 
     public AuthRequest(Buffer allBuf) {
         super(allBuf);
     }
 
+
     @Override
     public ClientInfo toDataEntity() {
         ClientInfo clientInfo = new ClientInfo();
-        int clientIdLength = getDataBuf().getInt(0);
-        String clientId = getDataBuf().getString(4, 4 + clientIdLength);
-        int clientPasswordLength = getDataBuf().getInt(4 + clientIdLength);
-        String clientPassword = getDataBuf().getString(4 + clientIdLength + 4, 4 + clientIdLength + 4 + clientPasswordLength);
+        System.out.println(ByteBufUtil.prettyHexDump(getDataBuf().getByteBuf()));
+        Long clientId = getDataBuf().getLong(0);
+        int clientPasswordLength = getDataBuf().getInt(8);
+        String clientPassword = getDataBuf().getString(12, 12 + clientPasswordLength);
 
         clientInfo.setClientId(clientId);
         clientInfo.setClientPassword(clientPassword);
@@ -35,13 +35,15 @@ public class AuthRequest extends BaseEntity<AuthRequest.ClientInfo> {
 
     @Override
     public Buffer toDataBuffer(ClientInfo client) {
-        return Buffer.buffer().appendInt(client.getClientId().length()).appendBytes(client.getClientId().getBytes(StandardCharsets.UTF_8))
-                .appendInt(client.getClientPassword().length()).appendBytes(client.getClientPassword().getBytes(StandardCharsets.UTF_8));
+        return Buffer.buffer()
+                .appendLong(client.getClientId())
+                .appendInt(client.getClientPassword().getBytes().length)
+                .appendBytes(client.getClientPassword().getBytes());
     }
 
     @Data
     public static class ClientInfo {
-        private String clientId;
+        private Long clientId;
         private String clientPassword;
     }
 }

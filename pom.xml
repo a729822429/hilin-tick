@@ -26,7 +26,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <spring-cloud.version>2023.0.1</spring-cloud.version>
-        <hutool.version>5.8.25</hutool.version>
+        <hutool.version>5.8.31</hutool.version>
         <mybatis-plus.version>3.5.5</mybatis-plus.version>
         <vertx.version>4.5.3</vertx.version>
     </properties>

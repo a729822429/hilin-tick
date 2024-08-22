@@ -3,3 +3,11 @@ server:
   httpPort: 8080
   # 信令通道端口
   cmdPort: 8081
+spring:
+  data:
+    redis:
+      host: localhost
+      port: 6379
+    mongodb:
+      uri: mongodb://localhost:27017/test
+      auto-index-creation: true
