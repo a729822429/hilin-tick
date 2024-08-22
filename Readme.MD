@@ -5,7 +5,7 @@
 [3]: https://img.shields.io/badge/hilin-welcome-brightgreen.svg?style=plastic
 [4]: https://hilin.icu
 [5]: https://img.shields.io/badge/release-1.0.0-blue.svg?style=plastic
-[6]: https://github.com/zhaojh329/lua-ffi/releases
+[6]: https://hilin.icu
 [![license][1]][2]
 [![Issue Welcome][3]][4]
 [![Release Version][5]][6]  
