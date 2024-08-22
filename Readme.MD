@@ -1,4 +1,4 @@
-# hilin-tick内网穿透
+# hilin-tick内网穿透(开发中)
 
 [1]: https://img.shields.io/badge/license-Apache2.0-brightgreen.svg?style=plastic
 [2]: /LICENSE
@@ -59,3 +59,9 @@
 - **tunnel_client_{action}_all**：通知所有客户端隧道
 - **channel_server_{action}_all**：通知所有服务端通道
 - **channel_client_{action}_all**：通知所有客户端通道
+
+### 进度
+- [x] tcp穿透
+- [ ] http域名绑定
+- [ ] udp穿透
+- [ ] 管理页面
