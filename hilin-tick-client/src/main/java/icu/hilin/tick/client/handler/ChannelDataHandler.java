@@ -6,6 +6,9 @@ import icu.hilin.tick.core.handler.BaseCmdHandler;
 import io.vertx.core.buffer.Buffer;
 import org.springframework.stereotype.Component;
 
+/**
+ * 客户端收到目标服务器返回的数据
+ */
 @Component
 public class ChannelDataHandler extends BaseCmdHandler<ChannelDataRequest> {
     @Override
