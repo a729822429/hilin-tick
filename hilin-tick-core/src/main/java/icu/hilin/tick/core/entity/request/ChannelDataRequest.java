@@ -25,18 +25,20 @@ public class ChannelDataRequest extends BaseEntity<ChannelDataRequest.ChannelDat
 
         return Buffer.buffer()
                 .appendLong(data.getChannelID())
-                // 写入responseData
+                .appendLong(data.getSeq())
                 .appendBuffer(data.getRequestData());
     }
 
     @Override
     public ChannelDataRequest.ChannelData toDataEntity() {
-        long connectorID = getDataBuf().getLong(0);
+        long channelID = getDataBuf().getLong(0);
+        long seq = getDataBuf().getLong(8);
 
         ChannelDataRequest.ChannelData channelData = new ChannelData();
-        channelData.setChannelID(connectorID);
-        if (getDataLength() > 8) {
-            channelData.setRequestData(getDataBuf().getBuffer(8, getDataBuf().length()));
+        channelData.setChannelID(channelID);
+        channelData.setSeq(seq);
+        if (getDataLength() > 16) {
+            channelData.setRequestData(getDataBuf().getBuffer(16, getDataBuf().length()));
         } else {
             channelData.setRequestData(Buffer.buffer());
         }
@@ -48,12 +50,14 @@ public class ChannelDataRequest extends BaseEntity<ChannelDataRequest.ChannelDat
     @AllArgsConstructor
     @NoArgsConstructor
     public static class ChannelData {
-
         /**
          * 请求连接id
          */
         private long channelID;
-
+        /**
+         * 序列，用以判断数据的顺序，从1开始，依次叠加
+         */
+        private long seq;
         private Buffer requestData;
     }
 }

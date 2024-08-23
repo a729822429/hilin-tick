@@ -1,5 +1,6 @@
 package icu.hilin.tick.client.handler;
 
+import icu.hilin.tick.core.TickConstant;
 import icu.hilin.tick.core.entity.BaseEntity;
 import icu.hilin.tick.core.entity.request.ChannelDataRequest;
 import icu.hilin.tick.core.handler.BaseCmdHandler;
@@ -7,10 +8,11 @@ import io.vertx.core.buffer.Buffer;
 import org.springframework.stereotype.Component;
 
 /**
- * 客户端收到目标服务器返回的数据
+ * 收到用户发送的数据
  */
 @Component
-public class ChannelDataHandler extends BaseCmdHandler<ChannelDataRequest> {
+public class ChannelDataRequestHandler extends BaseCmdHandler<ChannelDataRequest> {
+
     @Override
     public boolean needDeal(Long clientID, Buffer body) {
         return BaseEntity.TYPE_REQUEST_CHANNEL_TRANSPORT_DATA == body.getByte(0);
@@ -23,6 +25,8 @@ public class ChannelDataHandler extends BaseCmdHandler<ChannelDataRequest> {
 
     @Override
     public void doDeal(Long clientID, ChannelDataRequest entity) {
-
+        ChannelDataRequest.ChannelData channelData = entity.toDataEntity();
+        TickConstant.EVENT_BUS.publish(String.format(TickConstant.CHANNEL_CLIENT, "send", channelData.getChannelID()),
+                Buffer.buffer().appendLong(channelData.getSeq()).appendBuffer(channelData.getRequestData()));
     }
 }

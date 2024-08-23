@@ -69,7 +69,10 @@ public class TunnelServer {
                     });
 
                     // 发送数据到外网客户
-                    consumers.add(TickConstant.EVENT_BUS.consumer(String.format(TickConstant.CHANNEL_SERVER, "send", channelID), event -> socket.write(event.body())));
+                    consumers.add(TickConstant.EVENT_BUS.consumer(String.format(TickConstant.CHANNEL_SERVER, "send", channelID), event -> {
+                        BufferUtils.printBuffer("发送外网用户数据",event.body());
+                        socket.write(event.body());
+                    }));
 
                     socket.closeHandler(v -> {
                         CHANNEL_TUNNEL_INFO.remove(channelID);

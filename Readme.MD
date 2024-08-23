@@ -1,10 +1,15 @@
 # hilin-tick内网穿透(开发中)
 
 [1]: https://img.shields.io/badge/license-Apache2.0-brightgreen.svg?style=plastic
+
 [2]: /LICENSE
+
 [3]: https://img.shields.io/badge/hilin-welcome-brightgreen.svg?style=plastic
+
 [4]: https://hilin.icu
+
 [5]: https://img.shields.io/badge/release-1.0.0-blue.svg?style=plastic
+
 [6]: https://hilin.icu
 [![license][1]][2]
 [![Issue Welcome][3]][4]
@@ -44,7 +49,8 @@
 
 ## 事件说明
 
-### 单个通道 
+### 单个通道
+
 - **cmd_server_{action}_{clientID}**：通知cmd服务端执行对应命令
 - **cmd_client_{action}_{clientID}**：通知cmd客户端执行对应命令
 - **tunnel_server_{action}_{tunnelID}**：通知隧道服务端执行对应命令
@@ -53,6 +59,7 @@
 - **channel_client_{action}_{channelID}**：通知通道客户端执行对应命令
 
 ### 某一范围所有通道
+
 - **cmd_server_{action}_all**：通知所有指令服务端
 - **cmd_client_{action}_all**：通知所有指令客户端
 - **tunnel_server_{action}_all**：通知所有服务端隧道
@@ -61,7 +68,16 @@
 - **channel_client_{action}_all**：通知所有客户端通道
 
 ### 进度
+
 - [x] tcp穿透
 - [ ] http域名绑定
 - [ ] udp穿透
 - [ ] 管理页面
+
+### mod介绍
+
+mod-feature中都是实验性功能，未在项目中使用，稳定后才会考虑使用到项目中
+
+#### mod-feature
+
+- **hilin-tick-mod-event** 自研事件框架

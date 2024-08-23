@@ -18,7 +18,7 @@ public abstract class BaseEntity<T> {
 
     public static final byte TYPE_RESPONSE_AUTH_SUCCESS = -1;
     public static final byte TYPE_RESPONSE_AUTH_ERROR = -2;
-    public static final byte TYPE_RESPONSE_CHANNEL_DATA = -3;
+    public static final byte TYPE_RESPONSE_CHANNEL_TRANSPORT_DATA = -3;
 
     /**
      * 隧道更新
