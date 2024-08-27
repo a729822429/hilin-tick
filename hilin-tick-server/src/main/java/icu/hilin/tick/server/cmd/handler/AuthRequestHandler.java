@@ -45,8 +45,8 @@ public class AuthRequestHandler extends BaseCmdHandler<AuthRequest> {
             list.get(0).setTunnelId(1L);
             list.get(0).setClientID(clientID);
             list.get(0).setRemotePort(9999);
-            list.get(0).setTargetHost("192.168.5.200");
-            list.get(0).setTargetPort(22);
+            list.get(0).setTargetHost("192.168.1.124");
+            list.get(0).setTargetPort(11080);
 
             tunnelServer.startTcpTunnelServer(list.get(0));
 

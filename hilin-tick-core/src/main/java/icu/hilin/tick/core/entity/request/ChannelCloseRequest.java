@@ -24,19 +24,13 @@ public class ChannelCloseRequest extends BaseEntity<ChannelCloseRequest.ChannelD
     public Buffer toDataBuffer(ChannelCloseRequest.ChannelData data) {
 
         return Buffer.buffer()
-                .appendLong(data.getClientID())
-                .appendLong(data.getTunnelID())
                 .appendLong(data.getChannelID());
     }
 
     @Override
     public ChannelCloseRequest.ChannelData toDataEntity() {
-        long clientID = getDataBuf().getLong(0);
-        long tunnelID = getDataBuf().getLong(8);
-        long channelID = getDataBuf().getLong(16);
+        long channelID = getDataBuf().getLong(0);
         ChannelCloseRequest.ChannelData channelData = new ChannelData();
-        channelData.setClientID(clientID);
-        channelData.setTunnelID(tunnelID);
         channelData.setChannelID(channelID);
         return channelData;
     }
@@ -46,15 +40,6 @@ public class ChannelCloseRequest extends BaseEntity<ChannelCloseRequest.ChannelD
     @AllArgsConstructor
     @NoArgsConstructor
     public static class ChannelData {
-
-        /**
-         * 客户端id
-         */
-        private long clientID;
-        /**
-         * 隧道id
-         */
-        private long tunnelID;
         /**
          * 通道id
          */

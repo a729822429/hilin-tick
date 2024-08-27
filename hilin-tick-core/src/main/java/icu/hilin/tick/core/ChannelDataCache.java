@@ -1,4 +1,4 @@
-package icu.hilin.tick.client;
+package icu.hilin.tick.core;
 
 import io.vertx.core.buffer.Buffer;
 
