@@ -54,6 +54,7 @@ public class HilinEventBus<T> {
     public void consumer(String tag, HilinEventBusHandler<T> handler) {
         synchronized (allLock) {
             handler.setTag(tag);
+            handler.setEventBus(this);
             if (ObjectUtil.isEmpty(handlers.get(tag))) {
                 handlers.put(tag, new HashSet<>());
             }
@@ -141,7 +142,6 @@ public class HilinEventBus<T> {
                 eventBus.unregister(handler);
             }).start();
         }).start();
-
 
     }
 

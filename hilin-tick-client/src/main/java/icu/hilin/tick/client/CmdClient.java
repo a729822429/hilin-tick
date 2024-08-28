@@ -26,7 +26,9 @@ public class CmdClient implements ApplicationRunner {
     private static final Set<BaseCmdHandler<?>> HANDLERS = new HashSet<>();
 
     @Autowired
-    public void init(ApplicationContext context) {
+    private ApplicationContext context;
+
+    public void init() {
         context.getBeansOfType(BaseCmdHandler.class).forEach((name, handler) -> HANDLERS.add(handler));
     }
 
@@ -35,6 +37,7 @@ public class CmdClient implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+        init();
         List<MessageConsumer<Buffer>> consumers = new ArrayList<>();
         TickConstant.VERTX.createWebSocketClient()
                 .connect(clientConfig.getServerPort(), clientConfig.getServerHost(), "/", r -> {

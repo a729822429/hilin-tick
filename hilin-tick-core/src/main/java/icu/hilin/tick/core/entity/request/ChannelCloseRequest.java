@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class ChannelCloseRequest extends BaseEntity<ChannelCloseRequest.ChannelData> {
 
     public ChannelCloseRequest(ChannelData dataBuf) {
-        super(BaseEntity.TYPE_REQUEST_CHANNEL_CONNECTOR_DATA, dataBuf);
+        super(BaseEntity.TYPE_REQUEST_CHANNEL_CLOSE_DATA, dataBuf);
     }
 
     public ChannelCloseRequest(Buffer allBuf) {

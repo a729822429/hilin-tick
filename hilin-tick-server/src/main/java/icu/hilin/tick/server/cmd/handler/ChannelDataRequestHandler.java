@@ -23,6 +23,6 @@ public class ChannelDataRequestHandler extends BaseCmdHandler<ChannelDataRequest
     public void doDeal(Long clientID, ChannelDataRequest entity) {
         ChannelDataRequest.ChannelData channelData = entity.toDataEntity();
         TickConstant.EVENT_BUS.publish(String.format(TickConstant.CHANNEL_SERVER, "send", channelData.getChannelID()),
-                Buffer.buffer().appendLong(channelData.getSeq()).appendBuffer(channelData.getRequestData()));
+                channelData.getRequestData());
     }
 }
